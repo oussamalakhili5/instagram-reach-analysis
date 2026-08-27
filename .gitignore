@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+token.txt
+*.csv
+.DS_Store
+*.pdf
+
+print("✅ Étape 2 terminée ! Fichier .gitignore créé !")
