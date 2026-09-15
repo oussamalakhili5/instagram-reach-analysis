@@ -1,49 +1,149 @@
-# 📱 Instagram Reach Analysis
+# Instagram Reach Analysis
 
-## 🎯 Project Objective
-Comprehensive analysis of Instagram post reach to understand the factors influencing engagement and predict future post performance.
+Portfolio project analyzing the factors associated with Instagram post reach and
+presenting the results in an interactive Streamlit dashboard.
 
-## 📊 Methodology (KDD Process)
-1. **Data Cleaning** : Data cleaning and preparation (removing duplicates and missing values)
-2. **EDA** : Exploratory Data Analysis with visualizations (distributions, correlations, word clouds)
-3. **Clustering** : Post segmentation with K-Means (3 clusters identified)
-4. **Prediction** : Reach forecasting with Random Forest
+## Project overview
 
-## 🛠️ Technologies Used
-- Python 3.x
-- Pandas & NumPy for data manipulation
-- Matplotlib & Seaborn for visualization
-- Scikit-learn for Machine Learning
-- WordCloud for text analysis
+The project uses a small Instagram Insights export to:
 
-## 📈 Key Results
+- clean and profile post-level engagement data;
+- explore distributions, correlations, relationships, and text fields;
+- segment posts with K-Means clustering;
+- predict impressions with a Random Forest regression model;
+- expose the analysis through a reusable Streamlit application.
 
-### Post Segmentation (K-Means)
-| Cluster | Number of Posts | Average Impressions | Characteristic |
-|---------|----------------|---------------------|-----------------|
-| 0 | 82 | 4,336 | Low-Performing Posts |
-| 1 | 17 | 9,491 | Average Posts |
-| 2 | 3 | 29,003 | Viral Posts |
+The dataset contains 119 raw posts and 13 columns. After removing 17 duplicate
+rows, the analysis uses 102 unique posts. The target is `Impressions`.
 
-### Predictive Model Performance (Random Forest)
-- **R² Score** : 0.847 (84.7% of variance explained)
-- **Mean Absolute Error (MAE)** : 1,448 impressions
+## Dashboard
 
-### Most Influential Variables
-1. Likes
-2. Saves
-3. Profile Visits
-4. Shares
-5. Comments
+Run the application with:
 
-## 💡 Recommendations for Content Creators
-- **Increase Likes** : the variable most correlated with impressions
-- **Encourage Saves** : 2nd most important variable
-- **Optimize Profile Visits** : strong impact on virality
-- **Target Cluster 2** : viral posts get 6x more impressions
+```bash
+python -m streamlit run app/streamlit_app.py
+```
 
-## 📁 Project Structure
- ├── data/ # Raw data
- ├── notebooks/ # Jupyter Notebook
- ├── images/ # Generated visualizations
- └── README.md # Documentation 
+The dashboard includes:
+
+| Page | Contents |
+| --- | --- |
+| Overview | Dynamic KPIs, data audit, and pipeline summary |
+| Descriptive Analysis | Data preview, statistics, distributions, correlations, and relationships |
+| Post Segmentation | K-Means cluster profiles and interactive visualizations |
+| Predictive Analysis | Actual versus predicted impressions |
+| Model Performance | R², MAE, RMSE, and model-derived feature importance |
+| Insights & Recommendations | Evidence-based interpretation and next steps |
+| About | Project and data provenance |
+
+## Methodology
+
+```text
+Raw Instagram export
+        ↓
+Remove missing and duplicate rows
+        ↓
+Exploratory data analysis
+        ↓
+Standardize engagement features
+        ↓
+K-Means clustering (k=3)
+        ↓
+Random Forest regression
+        ↓
+Streamlit dashboard
+```
+
+### Clustering
+
+K-Means uses standardized `Likes`, `Saves`, `Comments`, `Shares`, `Profile
+Visits`, and `Follows`. The three clusters found in the notebook are reproduced
+by the application:
+
+| Cluster | Posts | Average impressions |
+| ---: | ---: | ---: |
+| 0 | 82 | 4,336 |
+| 1 | 17 | 9,491 |
+| 2 | 3 | 29,003 |
+
+The silhouette score for this fixed clustering is **0.454**. Cluster IDs are
+algorithmic labels; the dashboard describes them by relative reach rather than
+claiming that a cluster is inherently better.
+
+### Prediction
+
+The Random Forest Regressor uses the same six engagement features to predict
+`Impressions`. It uses a fixed 80/20 train/test split (`random_state=42`) and
+100 trees.
+
+| Metric | Test-set result |
+| --- | ---: |
+| R² | 0.847 |
+| MAE | 1,448 impressions |
+| RMSE | 2,748 impressions |
+
+Feature importance is computed from the fitted model. In the current run, the
+ranking is `Follows`, `Likes`, `Profile Visits`, `Saves`, `Comments`, `Shares`.
+These are predictive associations, not causal effects.
+
+## Descriptive analysis
+
+The notebook and dashboard cover numeric summaries, distributions, a
+correlation heatmap, pairwise relationships with impressions, and WordCloud
+visualizations for captions and hashtags. Existing static charts are retained
+in [`images/`](images/), while the dashboard provides interactive equivalents
+for the numeric analysis.
+
+## Dataset
+
+The source file is [`data/Instagram data.csv`](data/Instagram%20data.csv).
+It contains reach sources (`From Home`, `From Hashtags`, `From Explore`, and
+`From Other`), engagement (`Likes`, `Saves`, `Comments`, `Shares`), conversion
+signals (`Profile Visits`, `Follows`), and text fields (`Caption`, `Hashtags`).
+
+## Installation
+
+```bash
+git clone https://github.com/oussamalakhili5/instagram-reach-analysis.git
+cd instagram-reach-analysis
+
+python -m venv .venv
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+# macOS/Linux
+# source .venv/bin/activate
+
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+python -m streamlit run app/streamlit_app.py
+```
+
+## Project structure
+
+```text
+instagram-reach-analysis/
+├── app/
+│   ├── __init__.py
+│   └── streamlit_app.py
+├── data/
+│   └── Instagram data.csv
+├── images/
+│   └── generated analysis charts
+├── notebooks/
+│   └── instagram-reach-analysis.ipynb
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
+
+## Future improvements
+
+- collect a larger and time-aware dataset;
+- validate performance with temporal splits;
+- tune hyperparameters and compare alternative models;
+- add experiment tracking and model monitoring;
+- deploy the dashboard with a reproducible CI/CD workflow.
+
+## Author
+
+**Oussama Lakhili**
